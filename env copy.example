@@ -1,0 +1,17 @@
+# ---- Database ----
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/polymarket
+
+# ---- Gamma (metadata) ----
+# Public base URL (verify with your integration/docs if different)
+GAMMA_BASE_URL=https://gamma-api.polymarket.com
+
+# ---- CLOB (market data) ----
+# Used by py-clob-client; you can still run the project without these if you only do Gamma + CSV analysis.
+# NOTE: paper trading does NOT require private keys.
+CLOB_HOST=https://clob.polymarket.com
+CHAIN_ID=137
+
+# ---- Runtime ----
+LOG_LEVEL=INFO
+
+

@@ -92,6 +92,38 @@ create table if not exists market_price_ticks (
 
 create index if not exists market_price_ticks_as_of_idx on market_price_ticks (as_of desc);
 
+-- ---------- 行情（按 outcome/asset 粒度）：用于精确回查 YES/NO ----------
+-- CLOB WS market channel 是按 asset_id（token id）推送的；同一 market 里 YES/NO 是两个 asset。
+create table if not exists asset_price_latest (
+  asset_id          text primary key,
+  market_id         bigint,
+  outcome           text, -- 'YES' / 'NO'
+  as_of             timestamptz not null,
+  best_bid          numeric,
+  best_ask          numeric,
+  mid               numeric,
+  source            text not null, -- 'clob_ws'
+  raw               jsonb,
+  updated_at        timestamptz not null default now()
+);
+
+create index if not exists asset_price_latest_market_id_as_of_idx on asset_price_latest (market_id, as_of desc);
+
+create table if not exists asset_price_ticks (
+  asset_id          text not null,
+  as_of             timestamptz not null,
+  market_id         bigint,
+  outcome           text,
+  best_bid          numeric,
+  best_ask          numeric,
+  mid               numeric,
+  source            text not null,
+  raw               jsonb,
+  primary key (asset_id, as_of)
+);
+
+create index if not exists asset_price_ticks_as_of_idx on asset_price_ticks (as_of desc);
+
 -- ---------- Paper trading：信号、模拟订单/成交、持仓、PnL ----------
 create table if not exists arb_signals (
   signal_id      bigserial primary key,
